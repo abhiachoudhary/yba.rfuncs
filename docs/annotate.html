@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #drop-area {
+            border: 2px dashed #ccc;
+            width: 100%;
+            height: 200px;
+            text-align: center;
+            margin: 0 auto;
+            background-color: white;
+            width: 80%;
+            padding: 50px;
+        }
+        #drop-area:hover {
+            background-color: #f0f0f0;
+        }
+		html, body {
+			height: 100%;
+			margin: 0;
+			padding: 10px;
+         	        background-color: lightblue;
+		}
+        .styled-div {
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            line-height: 1.5;
+            padding: 20px;
+			margin: 0 auto;
+            width: 80%;
+            background-color: cornflowerblue;
+        }
+    </style>
+    <script>
+        function handleDrop(e) {
+            e.preventDefault();
+            let dt = e.dataTransfer;
+            let files = dt.files;
+
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            ([...files]).forEach(uploadFile);
+        }
+
+		function uploadFile(file) {
+			let reader = new FileReader();
+			reader.readAsText(file);
+			reader.onloadend = function() {
+				// Get the current HTML content
+				var html = reader.result;
+
+				// Add the new style link
+				html = html.replace('</head>', '<link rel="stylesheet" href="https://baranan.github.io/yba.rfuncs/annotation.css"></head>');
+
+				// Open a new window or tab with the modified HTML content
+				var newWindow = window.open();
+				newWindow.document.write(html);
+				newWindow.document.close();
+
+				// Add the new script
+				var script = newWindow.document.createElement('script');
+				script.src = 'https://baranan.github.io/yba.rfuncs/annotation.js';
+				newWindow.document.head.appendChild(script);
+			}
+		}
+
+
+        function uploadFileOld(file) {
+			let reader = new FileReader();
+			reader.readAsText(file);
+			reader.onloadend = function() {
+				// Get the current HTML content
+				var html = reader.result;
+
+				// Add the new style link and script
+				html = html.replace("</head>", "<link rel='stylesheet' href='https://baranan.github.io/yba.rfuncs/annotation.css'></head>");
+				tmp1 = '</';
+				tmp2 = 'body>';
+				tmp3 = 'script>'
+				html = html.replace(tmp1 + tmp2, '<script src="https://baranan.github.io/yba.rfuncs/annotation.js"' + tmp1 + tmp3 + tmp1 + tmp2);
+
+				// Open a new window or tab with the modified HTML content
+				var newWindow = window.open();
+				newWindow.document.write(html);
+				newWindow.document.close();
+			}
+		}
+
+
+
+    </script>
+</head>
+<body>
+	<br/><br/>
+    <div class="styled-div">
+        <b>Annotate a local HTML file</b> <br/>
+        After you drop your file here, I will open a new tab with your file and a button for annotating your html file. <br/>
+        <u>Do not forget</u> to save your file with the "Save annotated file" button. You can also save your work with mouse-right-click+save-as...<br/>     
+	If I don't open your html page after you drop it, please make sure your browser enables me to open a new window.
+    </div>
+	<br/><br/>
+    <div id="drop-area" ondrop="handleDrop(event)" ondragover="event.preventDefault()">
+        Drop an HTML file here
+    </div>
+</body>
+</html>
